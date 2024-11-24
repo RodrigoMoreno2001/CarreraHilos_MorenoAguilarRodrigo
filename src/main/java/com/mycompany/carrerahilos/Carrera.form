@@ -86,6 +86,7 @@
             <Property name="icon" type="javax.swing.Icon" editor="org.netbeans.modules.form.editors2.IconEditor">
               <Image iconType="3" name="/iris.png"/>
             </Property>
+            <Property name="name" type="java.lang.String" value="Iris" noResource="true"/>
           </Properties>
         </Component>
         <Component class="javax.swing.JLabel" name="jLabel2">
@@ -93,6 +94,7 @@
             <Property name="icon" type="javax.swing.Icon" editor="org.netbeans.modules.form.editors2.IconEditor">
               <Image iconType="3" name="/mike.png"/>
             </Property>
+            <Property name="name" type="java.lang.String" value="Mike" noResource="true"/>
           </Properties>
         </Component>
         <Component class="javax.swing.JLabel" name="jLabel3">
@@ -100,6 +102,7 @@
             <Property name="icon" type="javax.swing.Icon" editor="org.netbeans.modules.form.editors2.IconEditor">
               <Image iconType="3" name="/rose.png"/>
             </Property>
+            <Property name="name" type="java.lang.String" value="Rose" noResource="true"/>
           </Properties>
         </Component>
         <Component class="javax.swing.JLabel" name="jLabel4">
@@ -107,6 +110,7 @@
             <Property name="icon" type="javax.swing.Icon" editor="org.netbeans.modules.form.editors2.IconEditor">
               <Image iconType="3" name="/clint.png"/>
             </Property>
+            <Property name="name" type="java.lang.String" value="Clint" noResource="true"/>
           </Properties>
         </Component>
         <Component class="javax.swing.JButton" name="jButton1">
