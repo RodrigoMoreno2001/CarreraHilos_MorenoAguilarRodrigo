@@ -15,6 +15,7 @@ import java.util.logging.Logger;
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import javax.swing.JLabel;
+import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.SwingUtilities;
 
@@ -24,10 +25,10 @@ import javax.swing.SwingUtilities;
  */
 public class Carrera extends javax.swing.JFrame {
 
-    private boolean revolver;
+    
+    private boolean revolver; // es la variable que gestiona la carrera
     private JLabel[] corredores;
-    private int salida=24;
-    private int nCarrera=0;
+    private int salida=24; // coordenada x de la posicion de salida
 
     public Carrera() {
         initComponents();
@@ -135,15 +136,23 @@ public class Carrera extends javax.swing.JFrame {
     }
 
     public void carrera(){
-
         for(JLabel aux:corredores){
 
             new Thread(()->{
                 int x=salida;
+                int boost=25;
                 try {
                     while(x<984&&!revolver){
-                        Thread.sleep(10);
-                        x+=(int)(Math.random()*5);
+                        Thread.sleep(20);
+                        if((int)(Math.random()*1000)>990) boost=10;
+                        if(boost>0){
+                            boost--;
+                            x+=4;
+                        }else{
+                          x+=(int)(Math.random()*2)+1;  
+                        }
+                        
+                        if(x>984) x=984;
                         aux.setBounds(x, aux.getY(), aux.getWidth(), aux.getHeight());
                     }
                     ganadores();
@@ -157,47 +166,17 @@ public class Carrera extends javax.swing.JFrame {
     public synchronized void ganadores(){
 
         if(!revolver){
-            nCarrera++;
             ArrayList<JLabel> arrGanadores= new ArrayList<>(Arrays.asList(corredores));
 
             Collections.sort(arrGanadores,(e1,e2)->Integer.compare(e2.getX(), e1.getX()));
             String ganadores="";
             for(JLabel aux:arrGanadores) ganadores+=aux.getName()+" ("+aux.getX()+")\n";
             revolver=true;
-            System.out.println(ganadores);
-
-
+            JOptionPane.showMessageDialog(this, ganadores);
         }
     }
 
-    /**
-     * @param args the command line arguments
-     */
     public static void main(String args[]) {
-        /* Set the Nimbus look and feel */
-        //<editor-fold defaultstate="collapsed" desc=" Look and feel setting code (optional) ">
-        /* If Nimbus (introduced in Java SE 6) is not available, stay with the default look and feel.
-         * For details see http://download.oracle.com/javase/tutorial/uiswing/lookandfeel/plaf.html
-         */
-        try {
-            for (javax.swing.UIManager.LookAndFeelInfo info : javax.swing.UIManager.getInstalledLookAndFeels()) {
-                if ("Nimbus".equals(info.getName())) {
-                    javax.swing.UIManager.setLookAndFeel(info.getClassName());
-                    break;
-                }
-            }
-        } catch (ClassNotFoundException ex) {
-            java.util.logging.Logger.getLogger(Carrera.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
-        } catch (InstantiationException ex) {
-            java.util.logging.Logger.getLogger(Carrera.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
-        } catch (IllegalAccessException ex) {
-            java.util.logging.Logger.getLogger(Carrera.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
-        } catch (javax.swing.UnsupportedLookAndFeelException ex) {
-            java.util.logging.Logger.getLogger(Carrera.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
-        }
-        //</editor-fold>
-
-        /* Create and display the form */
         java.awt.EventQueue.invokeLater(new Runnable() {
             public void run() {
                 new Carrera().setVisible(true);
