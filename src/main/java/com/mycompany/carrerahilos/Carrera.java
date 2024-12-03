@@ -13,11 +13,9 @@ import java.util.Collections;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.swing.ImageIcon;
-import javax.swing.JButton;
 import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
-import javax.swing.SwingUtilities;
 
 /**
  *
@@ -29,7 +27,8 @@ public class Carrera extends javax.swing.JFrame {
     private boolean revolver; // es la variable que gestiona la carrera
     private JLabel[] corredores;
     private int salida=24; // coordenada x de la posicion de salida
-
+    private int meta=984;  // coordenada x donde va a concluir la carrera
+    
     public Carrera() {
         initComponents();
         revolver=true;
@@ -130,29 +129,42 @@ public class Carrera extends javax.swing.JFrame {
 
     private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {
 
-        if(!revolver) return;
+        if(!revolver){
+            Toolkit.getDefaultToolkit().beep();
+            return;
+        } // Si la carrera no ha terminado, no sigue con la ejecucion
         revolver=false;
         carrera();
     }
 
     public void carrera(){
+        // para cada corredor (JLabel)
         for(JLabel aux:corredores){
-
+            
             new Thread(()->{
-                int x=salida;
-                int boost=25;
+                int x=salida; // fija la coordenada x en la salida
+                int boost=25; // cada corredor empezará con 25 de boost("turbo")
                 try {
-                    while(x<984&&!revolver){
+                    // mientras un corredor no llegue a la meta o la carrera continúe
+                    while(x<meta&&!revolver){
+                        
                         Thread.sleep(20);
+                        
+                        // si el hilo tiene suerte, se le proporcionarán 10 de boost
                         if((int)(Math.random()*1000)>990) boost=10;
+                        
+                        // si el hilo tiene boost, sumará en x de 4 en 4
+                        // si el hilo NO tiene boost, x sumará de 1 en 1 o de 2 en 2
                         if(boost>0){
                             boost--;
                             x+=4;
                         }else{
-                          x+=(int)(Math.random()*2)+1;  
+                            x+=(int)(Math.random()*2)+1; 
                         }
+                        // el corredor nunca sobrepasará la meta
+                        if(x>meta) x=meta;
                         
-                        if(x>984) x=984;
+                        // mueve al corredor por el circuito
                         aux.setBounds(x, aux.getY(), aux.getWidth(), aux.getHeight());
                     }
                     ganadores();
@@ -166,13 +178,25 @@ public class Carrera extends javax.swing.JFrame {
     public synchronized void ganadores(){
 
         if(!revolver){
+            // se convierte el array de corredores a ArrayList para utilizar el metodo .sort de Collections
             ArrayList<JLabel> arrGanadores= new ArrayList<>(Arrays.asList(corredores));
 
+            /* el metodo .sort no es directamente aplicable sobre los JLabel, por lo tanto hay que
+             * definir un Comparator, en este caso como la interfaz Comparator es una interfaz funcional
+             * he optado por definirla mediante una funcion lambda.
+             * 
+             * dentro de este lambda he usado Integer.compare(int a,int b) para comparar el eje X de cada label
+             * esto actua como si de un compareTo se tratase, que es justo lo que el método sort necesita.
+             */
             Collections.sort(arrGanadores,(e1,e2)->Integer.compare(e2.getX(), e1.getX()));
+            
             String ganadores="";
+            // los ganadores se imprimen en el orden del array ordenado
             for(JLabel aux:arrGanadores) ganadores+=aux.getName()+" ("+aux.getX()+")\n";
-            revolver=true;
-            JOptionPane.showMessageDialog(this, ganadores);
+            
+            revolver=true; // la carrera puede volver a comenzar
+            
+            JOptionPane.showMessageDialog(this, ganadores); // se muestran los ganadores de la carrera
         }
     }
 
@@ -194,6 +218,9 @@ public class Carrera extends javax.swing.JFrame {
     private javax.swing.JPanel jPanel1;
     // End of variables declaration
 
+    // clase que extiende a JPanel, se usa para establecer un fondo en la carrera
+    // se puede hacer de mil formas, pero he usado esta :)
+    
     class Fondo extends JPanel{
         private Image fondo;
 
